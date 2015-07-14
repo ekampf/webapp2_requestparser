@@ -31,11 +31,7 @@ class JSONArgument(object):
         if json_str is None:
             return None
 
-        if isinstance(json_str, basestring):
-            json_obj = json.loads(json_str)
-        else:
-            json_obj = json_str
-
+        json_obj = json.loads(json_str)
         if self.schema is not None:
             jsonschema.validate(json_obj, self.schema)
 
