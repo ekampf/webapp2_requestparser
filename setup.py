@@ -56,7 +56,7 @@ test_requirements = [
 setup(
     name='webapp2_requestparser',
     version=get_version('webapp2_requestparser'),
-    description="Python Boilerplate contains all the boilerplate you need to create a Python package.",
+    description="A Request parsing interface designed to provide simple and uniform access to any variable on the webapp2.Request object in Webapp2",
     long_description=readme + '\n\n' + history,
     author="Eran Kampf",
     author_email='eran@ekampf.com',
@@ -64,8 +64,7 @@ setup(
     packages=[
         'webapp2_requestparser',
     ],
-    package_dir={'webapp2_requestparser':
-                 'webapp2_requestparser'},
+    package_dir={'webapp2_requestparser': 'webapp2_requestparser'},
     include_package_data=True,
     install_requires=requirements,
     license="BSD",
