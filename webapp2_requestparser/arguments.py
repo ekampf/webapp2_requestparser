@@ -53,9 +53,12 @@ class EmailArgument(object):
         return email.lower()
 
 
-class Base64String(object):
+class Base64StringArgument(object):
     def __call__(self, s):
-        return base64.urlsafe_b64decode(str(s))
+        try:
+            return base64.urlsafe_b64decode(str(s))
+        except Exception as ex:
+            raise ValueError("Invalid base 64 value. %s" % ex.message)
 
 
 class SafeStringArgument(object):
