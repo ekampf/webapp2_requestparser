@@ -2,7 +2,7 @@
 WebApp2 RequestParser
 ===============================
 
-.. image:: https://img.shields.io/travis/ekampf/webapp2_requestparser.svg
+.. image:: https://travis-ci.org/ekampf/webapp2_requestparser.svg
         :target: https://travis-ci.org/ekampf/webapp2_requestparser
 
 .. image:: https://img.shields.io/pypi/v/webapp2_requestparser.svg
