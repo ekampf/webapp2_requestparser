@@ -5,6 +5,9 @@ WebApp2 RequestParser
 .. image:: https://travis-ci.org/ekampf/webapp2_requestparser.svg
         :target: https://travis-ci.org/ekampf/webapp2_requestparser
 
+.. image:: https://coveralls.io/repos/ekampf/pymaybe/badge.svg?branch=master&service=github 
+        :target: https://coveralls.io/github/ekampf/pymaybe?branch=master
+
 .. image:: https://img.shields.io/pypi/v/webapp2_requestparser.svg
         :target: https://pypi.python.org/pypi/webapp2_requestparser
 
