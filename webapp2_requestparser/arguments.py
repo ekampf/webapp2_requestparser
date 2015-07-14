@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'ekampf'
 
+import base64
 import re
 import json
 from datetime import datetime
@@ -54,7 +55,7 @@ class EmailArgument(object):
 
 class Base64String(object):
     def __call__(self, s):
-        return s.decode('base64')
+        return base64.urlsafe_b64decode(str(s))
 
 
 class SafeStringArgument(object):

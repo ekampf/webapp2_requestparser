@@ -5,7 +5,7 @@ import unittest
 from mock import Mock, NonCallableMock
 from webapp2 import Request
 
-from webapp2_requestparser.reqparser import Argument, Namespace, RequestParser, InvalidParameterValue
+from webapp2_requestparser.parser import Argument, Namespace, RequestParser, InvalidParameterValue
 
 
 class TestRequestParserArgument(unittest.TestCase):

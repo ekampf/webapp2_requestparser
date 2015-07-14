@@ -2,8 +2,6 @@
 __author__ = 'ekampf'
 
 import unittest
-from mock import Mock, NonCallableMock
-from webapp2 import Request
 
 import json, jsonschema
 from webapp2_requestparser.arguments import JSONArgument
