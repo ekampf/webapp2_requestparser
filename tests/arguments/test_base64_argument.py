@@ -4,7 +4,7 @@ __author__ = 'ekampf'
 import base64
 import unittest
 
-from webapp2_requestparser.arguments import Base64String
+from webapp2_requestparser.arguments import Base64StringArgument
 
 class TestBase64Argument(unittest.TestCase):
     def setUp(self):
