@@ -12,15 +12,7 @@ class DateStringArgument(object):
         self.date_format = date_format
 
     def __call__(self, in_date):
-        try:
-            date = datetime.strptime(in_date, self.date_format)
-        except ValueError, v:
-            if len(v.args) > 0 and v.args[0].startswith('unconverted data remains: '):
-                date = in_date[:-(len(v.args[0])-26)]
-                date = datetime.strptime(date, self.date_format)
-            else:
-                raise ValueError('date cannot be created from string %s' % in_date)
-        return date
+        return datetime.strptime(in_date, self.date_format)
 
 
 class JSONArgument(object):
