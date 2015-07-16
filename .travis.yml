@@ -9,6 +9,10 @@ cache: pip
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: 
+  - wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.23.zip -nv
+  - unzip -q google_appengine_1.9.23.zip
+  - export PYTHONPATH=${PYTHONPATH}:$(pwd)/google_appengine/
+  - export PATH=${PATH}:$(pwd)/google_appengine/
   - pip install coveralls
   - pip install -r requirements.txt
 
