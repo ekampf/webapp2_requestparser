@@ -67,7 +67,7 @@ class Argument(object):
     def __init__(self, name, default=None, dest=None, required=False, ignore=False,
                  type=unicode, location=('json', 'params',),
                  choices=(), action='store', help=None,
-                 case_sensitive=True):
+                 case_sensitive=True, trim=False):
         """
         :param name: Either a name or a list of option strings, e.g. foo or -f, --foo.
         :param default: The value produced if the argument is absent from the request.
@@ -80,6 +80,7 @@ class Argument(object):
         :param action: The basic type of action to be taken when this argument is encountered in the request.
         :param help: A brief description of the argument, returned in the response when the argument is invalid. This takes precedence over the message passed to a ValidationError raised by a type converter.
         :param bool case_sensitive: Whether the arguments in the request are case sensitive or not
+        :param bool trim: If enabled, trims whitespace around the argument.
         """
         self.name = name
         self.default = default
@@ -92,6 +93,7 @@ class Argument(object):
         self.action = action
         self.help = help
         self.case_sensitive = case_sensitive
+        self.trim = trim
 
     # noinspection PyBroadException
     # pylint: disable=E0110, W0702
@@ -169,8 +171,13 @@ class Argument(object):
 
         results = []
         for value in values:
-            if value is not None and not self.case_sensitive:
+            if hasattr(value, "strip") and self.trim:
+                value = value.strip()
+
+            if hasattr(value, "lower") and not self.case_sensitive:
                 value = value.lower()
+                if hasattr(self.choices, "__iter__"):
+                    self.choices = [choice.lower() for choice in self.choices]
 
             try:
                 if value is not None:

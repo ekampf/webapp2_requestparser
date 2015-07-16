@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 __author__ = 'ekampf'
 
+import json
 import unittest
 from mock import Mock, NonCallableMock
 from webapp2 import Request
 
-from webapp2_requestparser.parser import Argument, Namespace, RequestParser, InvalidParameterValue
+from webapp2_requestparser.parser import Argument, Namespace, RequestParser, InvalidParameterValue, MissingParameterError
 
 
 class TestRequestParserArgument(unittest.TestCase):
@@ -38,6 +39,10 @@ class TestRequestParserArgument(unittest.TestCase):
         arg = Argument("foo")
         self.assertEqual(arg.name, "foo")
 
+    def test_default(self):
+        arg = Argument("foo", default=True)
+        self.assertEquals(arg.default, True)
+
     def test_dest(self):
         arg = Argument("foo", dest="foobar")
         self.assertEqual(arg.dest, "foobar")
@@ -46,13 +51,33 @@ class TestRequestParserArgument(unittest.TestCase):
         arg = Argument("foo")
         self.assertEqual(arg.help, None)
 
+    def test_location_url(self):
+        arg = Argument("foo", location="url")
+        self.assertEquals(arg.location, "url")
+
+    def test_location_url_list(self):
+        arg = Argument("foo", location=["url"])
+        self.assertEquals(arg.location, ["url"])
+
+    def test_location_header(self):
+        arg = Argument("foo", location="headers")
+        self.assertEquals(arg.location, "headers")
+
+    def test_location_json(self):
+        arg = Argument("foo", location="json")
+        self.assertEquals(arg.location, "json")
+
+    def test_location_get_json(self):
+        arg = Argument("foo", location="get_json")
+        self.assertEquals(arg.location, "get_json")
+
+    def test_location_header_list(self):
+        arg = Argument("foo", location=["headers"])
+        self.assertEquals(arg.location, ["headers"])
+
     def test_type(self):
         arg = Argument("foo", type=int)
-        self.assertEqual(arg.type, int)
-
-    def test_default(self):
-        arg = Argument("foo", default=True)
-        self.assertEqual(arg.default, True)
+        self.assertEquals(arg.type, int)
 
     def test_required(self):
         arg = Argument("foo", required=True)
@@ -108,6 +133,11 @@ class TestRequestParserArgument(unittest.TestCase):
         arg = Argument('foo', location=['headers'])
         self.assertEqual(arg.source(req), req.headers)
 
+    def test_convert_default_type_with_null_input(self):
+        """convert() should properly handle case where input is None"""
+        arg = Argument('foo')
+        self.assertEquals(arg.convert(None), None)
+
     def test_source_bad_location(self):
         req = Mock(['params'])
         arg = Argument('foo', location=['foo'])
@@ -131,10 +161,121 @@ class TestRequestParserArgument(unittest.TestCase):
         arg = Argument("foo", choices=["bar", "baz"])
         self.assertEqual(True, arg.case_sensitive)
 
-
     # endregion
 
     # region Request Parser
+    def testRequestParser_parse_unicode(self):
+        req = Request.blank("/bubble?foo=barß")
+        parser = RequestParser()
+        parser.add_argument("foo")
+
+        args = parser.parse_args(req)
+        self.assertEquals(args['foo'], u"barß")
+
+    def testRequestParser_parse_append_ignore(self):
+        req = Request.blank("/bubble?foo=bar")
+
+        parser = RequestParser()
+        parser.add_argument("foo", ignore=True, type=int, action="append")
+
+        args = parser.parse_args(req)
+        self.assertEquals(args['foo'], None)
+
+    def testRequestParser_parse_append_default(self):
+        req = Request.blank("/bubble?")
+
+        parser = RequestParser()
+        parser.add_argument("foo", action="append"),
+
+        args = parser.parse_args(req)
+        self.assertEquals(args['foo'], None)
+
+    def testRequestParser_parse_append(self):
+        req = Request.blank("/bubble?foo=bar&foo=bat")
+
+        parser = RequestParser()
+        parser.add_argument("foo", action="append"),
+
+        args = parser.parse_args(req)
+        self.assertEquals(args['foo'], ["bar", "bat"])
+
+    def testRequestParser_parse_append_single(self):
+        req = Request.blank("/bubble?foo=bar")
+
+        parser = RequestParser()
+        parser.add_argument("foo", action="append"),
+
+        args = parser.parse_args(req)
+        self.assertEquals(args['foo'], ["bar"])
+
+    def testRequestParser_parse_dest(self):
+        req = Request.blank("/bubble?foo=bar")
+
+        parser = RequestParser()
+        parser.add_argument("foo", dest="bat")
+
+        args = parser.parse_args(req)
+        self.assertEquals(args['bat'], "bar")
+
+    def testRequestParser_parse_required(self):
+        req = Request.blank("/bubble")
+
+        parser = RequestParser()
+        parser.add_argument("foo", required=True)
+
+        message = ''
+        try:
+            parser.parse_args(req)
+        except MissingParameterError as e:
+            message = e.message
+
+        self.assertEquals(message, u'Missing required parameter foo in json or params')
+
+        parser = RequestParser()
+        parser.add_argument("bar", required=True, location=['values', 'cookies'])
+
+        try:
+            parser.parse_args(req)
+        except Exception as e:
+            message = e.message
+
+        self.assertEquals(message, u"Missing required parameter bar in ['values', 'cookies']")
+
+    def testRequestParser_default_append(self):
+        req = Request.blank("/bubble")
+        parser = RequestParser()
+        parser.add_argument("foo", default="bar", action="append")
+
+        args = parser.parse_args(req)
+
+        self.assertEquals(args['foo'], "bar")
+
+    def testRequestParser_default(self):
+        req = Request.blank("/bubble")
+
+        parser = RequestParser()
+        parser.add_argument("foo", default="bar")
+
+        args = parser.parse_args(req)
+        self.assertEquals(args['foo'], "bar")
+
+    def testRequestParser_callable_default(self):
+        req = Request.blank("/bubble")
+
+        parser = RequestParser()
+        parser.add_argument("foo", default=lambda: "bar")
+
+        args = parser.parse_args(req)
+        self.assertEquals(args['foo'], "bar")
+
+    def testRequestParser_none(self):
+        req = Request.blank("/bubble")
+
+        parser = RequestParser()
+        parser.add_argument("foo")
+
+        args = parser.parse_args(req)
+        self.assertEquals(args['foo'], None)
 
     def testRequestParser_json_body(self):
         req = Request.blank('/', POST='{ "foo": "bar" }', environ={
@@ -155,6 +296,18 @@ class TestRequestParserArgument(unittest.TestCase):
         args = parser.parse_args(req)
         self.assertEqual(args['foo'], "11")
 
+    def testRequestParser_type_is_decimal(self):
+        import decimal
+
+        parser = RequestParser()
+        parser.add_argument("foo", type=decimal.Decimal, location="json")
+
+        req = Request.blank('/stam', POST=json.dumps(dict(foo="1.0025")), environ={
+            'CONTENT_TYPE': 'application/json;"',
+        })
+        args = parser.parse_args(req)
+        self.assertEquals(args['foo'], decimal.Decimal("1.0025"))
+
     def testRequestParser_noParams_returnsNone(self):
         req = Request.blank('/')
 
@@ -164,6 +317,83 @@ class TestRequestParserArgument(unittest.TestCase):
         args = parser.parse_args(req)
         self.assertEqual(args['foo'], None)
 
+    def testRequestParser_choices_correct(self):
+        req = Request.blank("/bubble?foo=bat")
+
+        parser = RequestParser()
+        parser.add_argument("foo", choices=["bat"]),
+
+        args = parser.parse_args(req)
+        self.assertEquals(args['foo'], "bat")
+
+    def testRequestParser_choices(self):
+        req = Request.blank("/bubble?foo=bar")
+
+        parser = RequestParser()
+        parser.add_argument("foo", choices=["bat"]),
+
+        self.assertRaises(InvalidParameterValue, lambda: parser.parse_args(req))
+
+    def testRequestParser_choices_sensitive(self):
+        req = Request.blank("/bubble?foo=BAT")
+
+        parser = RequestParser()
+        parser.add_argument("foo", choices=["bat"], case_sensitive=True),
+
+        self.assertRaises(InvalidParameterValue, lambda: parser.parse_args(req))
+
+    def testRequestParser_choices_insensitive(self):
+        req = Request.blank("/bubble?foo=BAT")
+
+        parser = RequestParser()
+        parser.add_argument("foo", choices=["bat"], case_sensitive=False),
+
+        args = parser.parse_args(req)
+        self.assertEquals('bat', args.get('foo'))
+
+        # both choices and args are case_insensitive
+        req = Request.blank("/bubble?foo=bat")
+
+        parser = RequestParser()
+        parser.add_argument("foo", choices=["BAT"], case_sensitive=False),
+
+        args = parser.parse_args(req)
+        self.assertEquals('bat', args.get('foo'))
+
+    def testRequestParser_choices_types_int(self):
+        parser = RequestParser()
+        parser.add_argument("foo", type=int, choices=[1, 2, 3], location='json')
+
+        req = Request.blank('/stam', POST=json.dumps(dict(foo=5)), environ={
+            'CONTENT_TYPE': 'application/json;"',
+        })
+
+        self.assertRaises(InvalidParameterValue, parser.parse_args, req)
+
+    def test_int_range_choice_types(self):
+        parser = RequestParser()
+        parser.add_argument("foo", type=int, choices=range(100), location='json')
+
+        req = Request.blank('/stam', POST=json.dumps(dict(foo=101)), environ={
+            'CONTENT_TYPE': 'application/json;"',
+        })
+        self.assertRaises(InvalidParameterValue, parser.parse_args, req)
+
+        req = Request.blank('/stam', POST=json.dumps(dict(foo=99)), environ={
+            'CONTENT_TYPE': 'application/json;"',
+        })
+        args = parser.parse_args(req)
+        self.assertEqual(99, args.get('foo'))
+
+    def testRequestParser_ignore(self):
+        req = Request.blank("/bubble?foo=bar")
+
+        parser = RequestParser()
+        parser.add_argument("foo", type=int, ignore=True)
+
+        args = parser.parse_args(req)
+        self.assertEquals(args['foo'], None)
+
     def testRequestParser_noParamsWithDefault_returnsDefault(self):
         req = Request.blank('/')
 
@@ -172,23 +402,6 @@ class TestRequestParserArgument(unittest.TestCase):
 
         args = parser.parse_args(req)
         self.assertEqual(args['foo'], 'faa')
-
-    def testRequestParser_choices_correctValue(self):
-        req = Request.blank('/stam?foo=bar')
-
-        parser = RequestParser()
-        parser.add_argument("foo", choices=["bar"])
-
-        args = parser.parse_args(req)
-        self.assertEqual(args['foo'], 'bar')
-
-    def testRequestParser_choices_incorrectValue(self):
-        req = Request.blank('/stam?foo=bat')
-
-        parser = RequestParser()
-        parser.add_argument("foo", choices=["bar"])
-
-        self.assertRaises(InvalidParameterValue, lambda: parser.parse_args(req))
 
     # endregion
 
