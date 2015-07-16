@@ -308,6 +308,36 @@ class TestRequestParserArgument(unittest.TestCase):
         args = parser.parse_args(req)
         self.assertEquals(args['foo'], decimal.Decimal("1.0025"))
 
+    def testRequestParser_type_is_bool(self):
+        import decimal
+
+        parser = RequestParser()
+        parser.add_argument("foo", type=bool)
+
+        args = parser.parse_args(Request.blank('/stam?foo=true'))
+        self.assertEquals(args['foo'], True)
+
+        args = parser.parse_args(Request.blank('/stam?foo=True'))
+        self.assertEquals(args['foo'], True)
+
+        args = parser.parse_args(Request.blank('/stam?foo=t'))
+        self.assertEquals(args['foo'], True)
+
+        args = parser.parse_args(Request.blank('/stam?foo=1'))
+        self.assertEquals(args['foo'], True)
+
+        args = parser.parse_args(Request.blank('/stam?foo=f'))
+        self.assertEquals(args['foo'], False)
+
+        args = parser.parse_args(Request.blank('/stam?foo=0'))
+        self.assertEquals(args['foo'], False)
+
+        args = parser.parse_args(Request.blank('/stam?foo=false'))
+        self.assertEquals(args['foo'], False)
+
+        args = parser.parse_args(Request.blank('/stam?foo=False'))
+        self.assertEquals(args['foo'], False)
+
     def testRequestParser_noParams_returnsNone(self):
         req = Request.blank('/')
 
