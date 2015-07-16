@@ -3,6 +3,7 @@ __author__ = 'ekampf'
 
 import inspect
 import decimal
+from copy import deepcopy
 
 from webob.multidict import MultiDict
 
@@ -237,9 +238,10 @@ class RequestParser(object):
 
     def copy(self):
         """ Creates a copy of this RequestParser with the same set of arguments """
-        parser_copy = RequestParser(self.argument_class, self.namespace_class)
-        parser_copy.args = list(self.args)
+        parser_copy = self.__class__(self.argument_class, self.namespace_class)
+        parser_copy.args = deepcopy(self.args)
         return parser_copy
+
 
     def replace_argument(self, name, *args, **kwargs):
         """ Replace the argument matching the given name with a new version. """

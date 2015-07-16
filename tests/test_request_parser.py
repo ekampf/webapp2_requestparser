@@ -403,5 +403,24 @@ class TestRequestParserArgument(unittest.TestCase):
         args = parser.parse_args(req)
         self.assertEqual(args['foo'], 'faa')
 
+    def testRequestParser_copy(self):
+        req = Request.blank("/bubble?foo=101&bar=baz")
+        parser = RequestParser()
+        foo_arg = Argument('foo', type=int)
+        parser.args.append(foo_arg)
+        parser_copy = parser.copy()
+
+        # Deepcopy should create a clone of the argument object instead of
+        # copying a reference to the new args list
+        self.assertFalse(foo_arg in parser_copy.args)
+
+        # Args added to new parser should not be added to the original
+        bar_arg = Argument('bar')
+        parser_copy.args.append(bar_arg)
+        self.assertFalse(bar_arg in parser.args)
+
+        args = parser_copy.parse_args(req)
+        self.assertEquals(args['foo'], 101)
+        self.assertEquals(args['bar'], u'baz')
     # endregion
 
