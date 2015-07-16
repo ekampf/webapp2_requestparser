@@ -164,6 +164,14 @@ class TestRequestParserArgument(unittest.TestCase):
     # endregion
 
     # region Request Parser
+    def testRequestParser_parse_addArgument(self):
+        req = Request.blank("/bubble?foo=barß")
+        parser = RequestParser()
+        parser.add_argument(Argument("foo"))
+
+        args = parser.parse_args(req)
+        self.assertEquals(args['foo'], u"barß")
+
     def testRequestParser_parse_unicode(self):
         req = Request.blank("/bubble?foo=barß")
         parser = RequestParser()
