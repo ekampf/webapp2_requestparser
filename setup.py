@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-
 try:
     from setuptools import setup
 except ImportError:
@@ -47,7 +45,6 @@ requirements = [
     'webapp2==2.5.2',
     'webob==1.2.3',
     'jsonschema==2.3.0',
-    'inflection==0.3.1'
 ]
 
 test_requirements = [
