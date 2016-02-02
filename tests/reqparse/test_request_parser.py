@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-__author__ = 'ekampf'
-
 import json
 import unittest
 from mock import Mock, NonCallableMock
 from webapp2 import Request
 
-from webapp2_requestparser.parser import Argument, Namespace, RequestParser, InvalidParameterValue, MissingParameterError
+from webapp2_restful.reqparse import Argument, Namespace, RequestParser, InvalidParameterValue, MissingParameterError
+
+__author__ = 'ekampf'
 
 
 class TestRequestParserArgument(unittest.TestCase):
@@ -472,4 +472,3 @@ class TestRequestParserArgument(unittest.TestCase):
         self.assertEquals(args['foo'], u'baz')
 
     # endregion
-

@@ -1,4 +1,4 @@
-PACKAGE=webapp2_requestparser
+PACKAGE=webapp2_restful
 TESTS_DIR=tests
 DOC_DIR=docs
 

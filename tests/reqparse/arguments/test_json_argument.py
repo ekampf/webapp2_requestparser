@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-__author__ = 'ekampf'
-
 import unittest
 
 import json, jsonschema
-from webapp2_requestparser.arguments import JSONArgument
+from webapp2_restful.reqparse.arguments import JSONArgument
+
+__author__ = 'ekampf'
+
 
 # noinspection PyProtectedMember
 class TestJSONArgument(unittest.TestCase):
     def setUp(self):
         self.target = JSONArgument()
-    
+
     def test_none_returnsNone(self):
         self.assertIsNone(self.target(None))
 
@@ -57,4 +58,3 @@ class TestJSONArgument(unittest.TestCase):
         target = JSONArgument(schema=schema)
         with self.assertRaises(jsonschema.ValidationError):
             target(obj_json)
-

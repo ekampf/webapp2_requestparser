@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-__author__ = 'ekampf'
-
 import unittest
 
-from webapp2_requestparser.parser import Argument
-from webapp2_requestparser.arguments import SafeStringArgument
+from webapp2_restful.reqparse import Argument
+from webapp2_restful.reqparse.arguments import SafeStringArgument
+
+__author__ = 'ekampf'
 
 
 class TestStringArgument(unittest.TestCase):
@@ -21,4 +21,3 @@ class TestStringArgument(unittest.TestCase):
         s = "test123"
         result = self.target.convert(s)
         self.assertEqual(result, s)
-

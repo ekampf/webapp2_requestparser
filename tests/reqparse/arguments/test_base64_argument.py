@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-__author__ = 'ekampf'
-
 import base64
 import unittest
 
-from webapp2_requestparser.arguments import Base64StringArgument
+from webapp2_restful.reqparse.arguments import Base64StringArgument
+
+__author__ = 'ekampf'
+
 
 class TestBase64Argument(unittest.TestCase):
     def setUp(self):

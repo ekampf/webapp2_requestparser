@@ -54,17 +54,17 @@ test_requirements = [
 ]
 
 setup(
-    name='webapp2_requestparser',
-    version=get_version('webapp2_requestparser'),
+    name='webapp2_restful',
+    version=get_version('webapp2_restful'),
     description="A Request parsing interface designed to provide simple and uniform access to any variable on the webapp2.Request object in Webapp2",
     long_description=readme + '\n\n' + history,
     author="Eran Kampf",
     author_email='eran@ekampf.com',
-    url='https://github.com/ekampf/webapp2_requestparser',
+    url='https://github.com/ekampf/webapp2_restful',
     packages=[
-        'webapp2_requestparser',
+        'webapp2_restful',
     ],
-    package_dir={'webapp2_requestparser': 'webapp2_requestparser'},
+    package_dir={'webapp2_restful': 'webapp2_restful'},
     include_package_data=True,
     setup_requires=[
         'setuptools-lint',
@@ -72,7 +72,7 @@ setup(
     install_requires=requirements,
     license="BSD",
     zip_safe=False,
-    keywords='webapp2_requestparser',
+    keywords='webapp2_restful',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',

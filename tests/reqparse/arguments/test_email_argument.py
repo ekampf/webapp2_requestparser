@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-__author__ = 'ekampf'
-
 import unittest
 
-from webapp2_requestparser.arguments import EmailArgument
+from webapp2_restful.reqparse.arguments import EmailArgument
+
+__author__ = 'ekampf'
+
 
 class TestEmailArgument(unittest.TestCase):
     def setUp(self):

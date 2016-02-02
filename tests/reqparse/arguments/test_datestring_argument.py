@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-__author__ = 'ekampf'
-
-import base64
 import unittest
 
-from webapp2_requestparser.arguments import DateStringArgument
+from webapp2_restful.reqparse.arguments import DateStringArgument
+
+__author__ = 'ekampf'
+
 
 class TestDateStringArgument(unittest.TestCase):
-
     def test_default_format_valid(self):
         target = DateStringArgument()
         dt = target('2015-07-16 08:34:57700140')
@@ -16,4 +15,3 @@ class TestDateStringArgument(unittest.TestCase):
         self.assertEqual(dt.day, 16)
         self.assertEqual(dt.hour, 8)
         self.assertEqual(dt.minute, 34)
-
