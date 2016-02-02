@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from webapp2 import Route
 from webapp2_extras.routes import MultiRoute
 
@@ -6,8 +5,8 @@ from inflection import singularize, pluralize
 
 __author__ = 'ekampf'
 
-
 # pylint:disable=C0326,R0902
+
 class ResourceRoute(MultiRoute):
     ALL_REST_ACTIONS = ['index', 'create', 'show', 'update', 'destroy']
 
@@ -121,8 +120,3 @@ class ResourceRoute(MultiRoute):
                 routes.append(Route(resource_path + sub_route.template, handler=sub_route.handler, handler_method=sub_route.handler_method, methods=sub_route.methods, name="%s_%s" % (self.__name_prefix + singular_name, sub_route.name)))
 
         return routes
-
-
-
-
-
