@@ -14,14 +14,13 @@ WebApp2 RequestParser
 
 The *webapp2_restful* library is a Request parsing interface inspired by `restful-flask's request parser  <http://flask-restful.readthedocs.org/en/latest/reqparse.html>`_.
 
-Its interface is modelled after the `argparse <http://docs.python.org/dev/library/argparse.html>`_ interface.
+Its interface is modeled after the `argparse <http://docs.python.org/dev/library/argparse.html>`_ interface.
 
 Its goal is to provide a uniform access to any variable on the webapp2.Request object and allowing handlers to provide a sort of "contract" where they
 specify the parameters they expect to be called with - making code easier to read and understand.
 
 * Free software: BSD license
 * Documentation: https://webapp2_restful.readthedocs.org.
-<TBD - Documentation is still partial but mostly follows the same API the Flask library provide with a few additions>
 
 Basic Argument Parsing
 ----------------------
