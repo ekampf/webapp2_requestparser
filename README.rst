@@ -23,34 +23,33 @@ specify the parameters they expect to be called with - making code easier to rea
 * Documentation: https://webapp2_restful.readthedocs.org.
 <TBD - Documentation is still partial but mostly follows the same API the Flask library provide with a few additions>
 
-**********************
 Basic Argument Parsing
-**********************
+----------------------
 
 Here’s a simple example of the request parser.
-It looks for two arguments in the webapp2.Request's *json* and *params* properties: one of type int, and the other of type str::
+It looks for two arguments in the webapp2.Request's *json* and *params* properties: one of type int, and the other of type str:
 
-  from webapp2_restful.parser import RequestParser
+.. code::
 
-  parser = RequestParser()
-  parser.add_argument('rate', type=int, help='Rate cannot be converted')
-  parser.add_argument('name', type=str)
-  args = parser.parse_args(self.request)
+    from webapp2_restful.parser import RequestParser
+
+    parser = RequestParser()
+    parser.add_argument('rate', type=int, help='Rate cannot be converted')
+    parser.add_argument('name', type=str)
+    args = parser.parse_args(self.request)
 
 
-**********************************
 Special Google AppEngine Arguments
-**********************************
+----------------------------------
 
-::
+.. code::
 
-  from webapp2_restful.parser import RequestParser
-  from webapp2_restful.arguments_ndb import EntityIDArgument
+    from webapp2_restful.parser import RequestParser
+    from webapp2_restful.arguments_ndb import EntityIDArgument
 
-  parser = RequestParser()
-  parser.add_argument('store_id', type=EntityIDArgument(Store), dest='store')
-  args = parser.parse_args(self.request)
+    parser = RequestParser()
+    parser.add_argument('store_id', type=EntityIDArgument(Store), dest='store')
+    args = parser.parse_args(self.request)
 
-  # args.store is a Store instance
-  print(args.store)
-
+    # args.store is a Store instance
+    print(args.store)
