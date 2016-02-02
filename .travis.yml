@@ -8,7 +8,7 @@ python:
 cache: pip
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: 
+install:
   - wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.23.zip -nv
   - unzip -q google_appengine_1.9.23.zip
   - export PYTHONPATH=${PYTHONPATH}:$(pwd)/google_appengine/
@@ -17,7 +17,6 @@ install:
   - pip install -r requirements.txt
 
 # command to run tests, e.g. python setup.py test
-script: coverage run --source webapp2_requestparser setup.py test
+script: coverage run --source webapp2_restful setup.py test
 
 after_success: coveralls
-
