@@ -1,3 +1,7 @@
+PACKAGE=webapp2_requestparser
+TESTS_DIR=tests
+DOC_DIR=docs
+
 .PHONY: clean-pyc clean-build docs clean
 
 help:
@@ -5,7 +9,7 @@ help:
 	@echo "clean-build - remove build artifacts"
 	@echo "clean-pyc - remove Python file artifacts"
 	@echo "clean-test - remove test and coverage artifacts"
-	@echo "lint - check style with flake8"
+	@echo "lint - check style with pylint"
 	@echo "test - run tests quickly with the default Python"
 	@echo "test-all - run tests on every Python version with tox"
 	@echo "coverage - check code coverage quickly with the default Python"
@@ -16,7 +20,7 @@ help:
 
 .venv:
 	if [ ! -e ".venv/bin/activate_this.py" ] ; then virtualenv --clear .venv ; fi
-	
+
 deps: .venv
 	PYTHONPATH=.venv ; . .venv/bin/activate && .venv/bin/pip install -U -r requirements.txt
 
@@ -41,7 +45,7 @@ clean-test:
 	rm -fr htmlcov/
 
 lint:
-	PYTHONPATH=$PYTHONPATH:.venv:. ; . .venv/bin/activate && flake8 webapp2_requestparser tests
+	PYTHONPATH=$PYTHONPATH:.venv:. ; . .venv/bin/activate && python setup.py lint --lint-rcfile=.pylintrc --lint-reports=no --lint-packages=$(PACKAGE)/
 
 test:
 	PYTHONPATH=$PYTHONPATH:.venv:. . .venv/bin/activate && python setup.py test
@@ -50,18 +54,18 @@ test-all:
 	PYTHONPATH=$PYTHONPATH:.venv:. . .venv/bin/activate && tox
 
 coverage:
-	PYTHONPATH=$PYTHONPATH:.venv:. ; . .venv/bin/activate && coverage run --source webapp2_requestparser setup.py test
+	PYTHONPATH=$PYTHONPATH:.venv:. ; . .venv/bin/activate && coverage run --source $(PACKAGE) setup.py test
 	PYTHONPATH=$PYTHONPATH:.venv:. ; . .venv/bin/activate && coverage report -m
 	PYTHONPATH=$PYTHONPATH:.venv:. ; . .venv/bin/activate && coverage html
 	PYTHONPATH=$PYTHONPATH:.venv:. ; . .venv/bin/activate && open htmlcov/index.html
 
 docs:
-	rm -f docs/webapp2_requestparser.rst
+	rm -f $(DOC_DIR)/$(PACKAGE).rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ webapp2_requestparser
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
-	open docs/_build/html/index.html
+	sphinx-apidoc -o  $(DOC_DIR)/ $(PACKAGE)
+	$(MAKE) -C  $(DOC_DIR) clean
+	$(MAKE) -C  $(DOC_DIR) html
+	open  $(DOC_DIR)/_build/html/index.html
 
 release: clean
 	PYTHONPATH=$PYTHONPATH:.venv:. ; . .venv/bin/activate && python setup.py sdist upload

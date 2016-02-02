@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-__author__ = 'ekampf'
-
 import base64
 import re
 import json
 from datetime import datetime
 import jsonschema
+
+__author__ = 'ekampf'
+
 
 class DateStringArgument(object):
     def __init__(self, date_format='%Y-%m-%d %H:%M:%S%f'):

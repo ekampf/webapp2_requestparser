@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-__author__ = 'ekampf'
-
 import base64
 
 try:
     from google.appengine.ext import ndb
 except ImportError:
     raise Exception("NDB Required")
+
+__author__ = 'ekampf'
 
 
 class EntityIDArgument(object):
@@ -28,6 +28,3 @@ class EntityIDArgument(object):
 class EntityLongIDArgument(EntityIDArgument):
     def __call__(self, entity_id):
         return super(EntityLongIDArgument, self).__call__(long(entity_id))
-
-
-

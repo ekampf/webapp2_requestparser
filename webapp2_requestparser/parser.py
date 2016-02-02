@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-__author__ = 'ekampf'
-
 import inspect
 import decimal
 from copy import deepcopy
 
 from webob.multidict import MultiDict
+
+__author__ = 'ekampf'
 
 
 class ParserError(Exception):
@@ -252,4 +252,3 @@ class RequestParser(object):
                 self.args.append(new_arg)
                 break
         return self
-
